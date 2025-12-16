@@ -20,6 +20,8 @@ const canvas = document.getElementById('game-board');
 const ctx = canvas.getContext('2d');
 const nextCanvas = document.getElementById('next-piece');
 const nextCtx = nextCanvas.getContext('2d');
+const nextCanvasTouch = document.getElementById('next-piece-touch');
+const nextCtxTouch = nextCanvasTouch ? nextCanvasTouch.getContext('2d') : null;
 
 // Web Audio API - 効果音の生成
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -273,13 +275,21 @@ function drawPiece(context, piece) {
 
 // 次のピースの描画
 function drawNextPiece() {
+    // サイドパネルのキャンバス
     nextCtx.fillStyle = '#1a1a2e';
     nextCtx.fillRect(0, 0, nextCanvas.width, nextCanvas.height);
+    
+    // タッチコントロールのキャンバス（存在する場合）
+    if (nextCtxTouch) {
+        nextCtxTouch.fillStyle = '#1a1a2e';
+        nextCtxTouch.fillRect(0, 0, nextCanvasTouch.width, nextCanvasTouch.height);
+    }
     
     if (nextPiece) {
         const offsetX = (4 - nextPiece.shape[0].length) / 2;
         const offsetY = (4 - nextPiece.shape.length) / 2;
         
+        // サイドパネルに描画
         for (let y = 0; y < nextPiece.shape.length; y++) {
             for (let x = 0; x < nextPiece.shape[y].length; x++) {
                 if (nextPiece.shape[y][x]) {
@@ -290,6 +300,23 @@ function drawNextPiece() {
                         BLOCK_SIZE - 2,
                         BLOCK_SIZE - 2
                     );
+                }
+            }
+        }
+        
+        // タッチコントロールに描画（存在する場合）
+        if (nextCtxTouch) {
+            for (let y = 0; y < nextPiece.shape.length; y++) {
+                for (let x = 0; x < nextPiece.shape[y].length; x++) {
+                    if (nextPiece.shape[y][x]) {
+                        nextCtxTouch.fillStyle = nextPiece.color;
+                        nextCtxTouch.fillRect(
+                            (offsetX + x) * BLOCK_SIZE + 1,
+                            (offsetY + y) * BLOCK_SIZE + 1,
+                            BLOCK_SIZE - 2,
+                            BLOCK_SIZE - 2
+                        );
+                    }
                 }
             }
         }
@@ -420,6 +447,10 @@ function gameOver() {
     document.getElementById('final-score').textContent = score;
     document.getElementById('game-over').classList.remove('hidden');
     document.getElementById('pause-button').disabled = true;
+    
+    // タッチコントロールのボタンも同期
+    const pauseButtonTouch = document.getElementById('pause-button-touch');
+    if (pauseButtonTouch) pauseButtonTouch.disabled = true;
 }
 
 // 新しいピースの生成
@@ -462,6 +493,12 @@ function startGame() {
     document.getElementById('start-button').disabled = true;
     document.getElementById('pause-button').disabled = false;
     
+    // タッチコントロールのボタンも同期
+    const startButtonTouch = document.getElementById('start-button-touch');
+    const pauseButtonTouch = document.getElementById('pause-button-touch');
+    if (startButtonTouch) startButtonTouch.disabled = true;
+    if (pauseButtonTouch) pauseButtonTouch.disabled = false;
+    
     nextPiece = randomTetromino();
     spawnPiece();
     drawBoard();
@@ -473,7 +510,12 @@ function startGame() {
 // 一時停止/再開
 function togglePause() {
     isPaused = !isPaused;
-    document.getElementById('pause-button').textContent = isPaused ? '再開' : '一時停止';
+    const pauseText = isPaused ? '再開' : '一時停止';
+    document.getElementById('pause-button').textContent = pauseText;
+    
+    // タッチコントロールのボタンも同期
+    const pauseButtonTouch = document.getElementById('pause-button-touch');
+    if (pauseButtonTouch) pauseButtonTouch.textContent = pauseText;
 }
 
 // キーボード操作
@@ -515,8 +557,20 @@ document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('pause-button').addEventListener('click', togglePause);
 document.getElementById('restart-button').addEventListener('click', () => {
     document.getElementById('start-button').disabled = false;
+    const startButtonTouch = document.getElementById('start-button-touch');
+    if (startButtonTouch) startButtonTouch.disabled = false;
     startGame();
 });
+
+// タッチコントロール用のボタンイベント
+const startButtonTouch = document.getElementById('start-button-touch');
+const pauseButtonTouch = document.getElementById('pause-button-touch');
+if (startButtonTouch) {
+    startButtonTouch.addEventListener('click', startGame);
+}
+if (pauseButtonTouch) {
+    pauseButtonTouch.addEventListener('click', togglePause);
+}
 
 // タッチデバイスの検出とタッチコントロールの表示
 function isTouchDevice() {
