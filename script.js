@@ -446,11 +446,7 @@ function gameOver() {
     playGameOverSound(); // ゲームオーバー音
     document.getElementById('final-score').textContent = score;
     document.getElementById('game-over').classList.remove('hidden');
-    document.getElementById('pause-button').disabled = true;
-    
-    // タッチコントロールのボタンも同期
-    const pauseButtonTouch = document.getElementById('pause-button-touch');
-    if (pauseButtonTouch) pauseButtonTouch.disabled = true;
+    syncButtonStates(false, true, '一時停止');
 }
 
 // 新しいピースの生成
@@ -490,14 +486,7 @@ function startGame() {
     
     updateScore();
     document.getElementById('game-over').classList.add('hidden');
-    document.getElementById('start-button').disabled = true;
-    document.getElementById('pause-button').disabled = false;
-    
-    // タッチコントロールのボタンも同期
-    const startButtonTouch = document.getElementById('start-button-touch');
-    const pauseButtonTouch = document.getElementById('pause-button-touch');
-    if (startButtonTouch) startButtonTouch.disabled = true;
-    if (pauseButtonTouch) pauseButtonTouch.disabled = false;
+    syncButtonStates(true, false, '一時停止');
     
     nextPiece = randomTetromino();
     spawnPiece();
@@ -513,7 +502,6 @@ function togglePause() {
     const pauseText = isPaused ? '再開' : '一時停止';
     document.getElementById('pause-button').textContent = pauseText;
     
-    // タッチコントロールのボタンも同期
     const pauseButtonTouch = document.getElementById('pause-button-touch');
     if (pauseButtonTouch) pauseButtonTouch.textContent = pauseText;
 }
@@ -552,15 +540,25 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// ボタン状態の同期ヘルパー関数
+function syncButtonStates(startDisabled, pauseDisabled, pauseText) {
+    document.getElementById('start-button').disabled = startDisabled;
+    document.getElementById('pause-button').disabled = pauseDisabled;
+    document.getElementById('pause-button').textContent = pauseText || '一時停止';
+    
+    const startButtonTouch = document.getElementById('start-button-touch');
+    const pauseButtonTouch = document.getElementById('pause-button-touch');
+    if (startButtonTouch) startButtonTouch.disabled = startDisabled;
+    if (pauseButtonTouch) {
+        pauseButtonTouch.disabled = pauseDisabled;
+        pauseButtonTouch.textContent = pauseText || '一時停止';
+    }
+}
+
 // ボタンイベント
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('pause-button').addEventListener('click', togglePause);
-document.getElementById('restart-button').addEventListener('click', () => {
-    document.getElementById('start-button').disabled = false;
-    const startButtonTouch = document.getElementById('start-button-touch');
-    if (startButtonTouch) startButtonTouch.disabled = false;
-    startGame();
-});
+document.getElementById('restart-button').addEventListener('click', startGame);
 
 // タッチコントロール用のボタンイベント
 const startButtonTouch = document.getElementById('start-button-touch');
