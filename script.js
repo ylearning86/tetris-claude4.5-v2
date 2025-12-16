@@ -534,40 +534,82 @@ if (isTouchDevice()) {
 }
 
 // タッチコントロールのボタンイベント
-document.getElementById('left-button')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!isGameOver && currentPiece && !isPaused) {
-        movePiece(-1, 0);
-        drawBoard();
-    }
-});
-
-document.getElementById('right-button')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!isGameOver && currentPiece && !isPaused) {
-        movePiece(1, 0);
-        drawBoard();
-    }
-});
-
-document.getElementById('down-button')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!isGameOver && currentPiece && !isPaused) {
-        if (movePiece(0, 1)) {
-            score += 1;
-            updateScore();
+// タッチイベントとクリックイベントの二重実行を防ぐためのヘルパー関数
+function createTouchButtonHandler(callback) {
+    let touchHandled = false;
+    
+    return {
+        touchHandler: (e) => {
+            e.preventDefault();
+            touchHandled = true;
+            callback();
+            // 300ms後にフラグをリセット（クリックイベントの遅延を考慮）
+            setTimeout(() => { touchHandled = false; }, 300);
+        },
+        clickHandler: (e) => {
+            e.preventDefault();
+            // タッチで既に処理されていない場合のみ実行
+            if (!touchHandled) {
+                callback();
+            }
         }
-        drawBoard();
-    }
-});
+    };
+}
 
-document.getElementById('rotate-button')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!isGameOver && currentPiece && !isPaused) {
-        rotatePiece();
-        drawBoard();
-    }
-});
+// 左移動ボタン
+const leftButton = document.getElementById('left-button');
+if (leftButton) {
+    const handlers = createTouchButtonHandler(() => {
+        if (!isGameOver && currentPiece && !isPaused) {
+            movePiece(-1, 0);
+            drawBoard();
+        }
+    });
+    leftButton.addEventListener('touchend', handlers.touchHandler, { passive: false });
+    leftButton.addEventListener('click', handlers.clickHandler);
+}
+
+// 右移動ボタン
+const rightButton = document.getElementById('right-button');
+if (rightButton) {
+    const handlers = createTouchButtonHandler(() => {
+        if (!isGameOver && currentPiece && !isPaused) {
+            movePiece(1, 0);
+            drawBoard();
+        }
+    });
+    rightButton.addEventListener('touchend', handlers.touchHandler, { passive: false });
+    rightButton.addEventListener('click', handlers.clickHandler);
+}
+
+// 落下ボタン
+const downButton = document.getElementById('down-button');
+if (downButton) {
+    const handlers = createTouchButtonHandler(() => {
+        if (!isGameOver && currentPiece && !isPaused) {
+            if (movePiece(0, 1)) {
+                score += 1;
+                updateScore();
+            }
+            drawBoard();
+        }
+    });
+    downButton.addEventListener('touchend', handlers.touchHandler, { passive: false });
+    downButton.addEventListener('click', handlers.clickHandler);
+}
+
+// 回転ボタン
+const rotateButton = document.getElementById('rotate-button');
+if (rotateButton) {
+    const handlers = createTouchButtonHandler(() => {
+        if (!isGameOver && currentPiece && !isPaused) {
+            rotatePiece();
+            drawBoard();
+        }
+    });
+    rotateButton.addEventListener('touchend', handlers.touchHandler, { passive: false });
+    rotateButton.addEventListener('click', handlers.clickHandler);
+}
 
 // スワイプジェスチャーのサポート
 let touchStartX = 0;
