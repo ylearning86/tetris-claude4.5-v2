@@ -534,22 +534,24 @@ if (isTouchDevice()) {
 }
 
 // タッチコントロールのボタンイベント
+// タッチイベントとクリックイベントの二重実行を防ぐための定数
+const TOUCH_DEBOUNCE_DELAY = 300; // iOS/iPadOSのクリック遅延を考慮
+
 // タッチイベントとクリックイベントの二重実行を防ぐためのヘルパー関数
 function createTouchButtonHandler(callback) {
-    let touchHandled = false;
+    let lastTouchTime = 0;
     
     return {
         touchHandler: (e) => {
             e.preventDefault();
-            touchHandled = true;
+            lastTouchTime = Date.now();
             callback();
-            // 300ms後にフラグをリセット（クリックイベントの遅延を考慮）
-            setTimeout(() => { touchHandled = false; }, 300);
         },
         clickHandler: (e) => {
             e.preventDefault();
-            // タッチで既に処理されていない場合のみ実行
-            if (!touchHandled) {
+            // 最後のタッチから指定時間内の場合はクリックイベントをスキップ
+            const timeSinceTouch = Date.now() - lastTouchTime;
+            if (timeSinceTouch > TOUCH_DEBOUNCE_DELAY) {
                 callback();
             }
         }
