@@ -286,7 +286,7 @@ h3 {
     }
 }
 
-/* iPad Pro 12.9インチ（縦向き） */
+/* iPad Pro 12.9inch (Portrait) */
 @media (min-width: 1024px) and (max-width: 1366px) and (orientation: portrait) {
     .game-container {
         max-width: 900px;
@@ -322,7 +322,7 @@ h3 {
     }
 }
 
-/* スマートフォン向け */
+/* 小型デバイス向け (Small devices) */
 @media (max-width: 767px) {
     .game-container {
         padding: 15px;
