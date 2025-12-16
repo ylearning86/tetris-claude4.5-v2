@@ -23,6 +23,12 @@ const nextCtx = nextCanvas.getContext('2d');
 const nextCanvasTouch = document.getElementById('next-piece-touch');
 const nextCtxTouch = nextCanvasTouch ? nextCanvasTouch.getContext('2d') : null;
 
+// ボタン要素のキャッシュ
+const startButtonMain = document.getElementById('start-button');
+const pauseButtonMain = document.getElementById('pause-button');
+const startButtonTouch = document.getElementById('start-button-touch');
+const pauseButtonTouch = document.getElementById('pause-button-touch');
+
 // Web Audio API - 効果音の生成
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioContext = new AudioContext();
@@ -273,28 +279,20 @@ function drawPiece(context, piece) {
     }
 }
 
-// 次のピースの描画
-function drawNextPiece() {
-    // サイドパネルのキャンバス
-    nextCtx.fillStyle = '#1a1a2e';
-    nextCtx.fillRect(0, 0, nextCanvas.width, nextCanvas.height);
-    
-    // タッチコントロールのキャンバス（存在する場合）
-    if (nextCtxTouch) {
-        nextCtxTouch.fillStyle = '#1a1a2e';
-        nextCtxTouch.fillRect(0, 0, nextCanvasTouch.width, nextCanvasTouch.height);
-    }
+// 次のピースをキャンバスに描画するヘルパー関数
+function drawNextPieceOnCanvas(context, canvasWidth, canvasHeight) {
+    context.fillStyle = '#1a1a2e';
+    context.fillRect(0, 0, canvasWidth, canvasHeight);
     
     if (nextPiece) {
         const offsetX = (4 - nextPiece.shape[0].length) / 2;
         const offsetY = (4 - nextPiece.shape.length) / 2;
         
-        // サイドパネルに描画
         for (let y = 0; y < nextPiece.shape.length; y++) {
             for (let x = 0; x < nextPiece.shape[y].length; x++) {
                 if (nextPiece.shape[y][x]) {
-                    nextCtx.fillStyle = nextPiece.color;
-                    nextCtx.fillRect(
+                    context.fillStyle = nextPiece.color;
+                    context.fillRect(
                         (offsetX + x) * BLOCK_SIZE + 1,
                         (offsetY + y) * BLOCK_SIZE + 1,
                         BLOCK_SIZE - 2,
@@ -303,23 +301,17 @@ function drawNextPiece() {
                 }
             }
         }
-        
-        // タッチコントロールに描画（存在する場合）
-        if (nextCtxTouch) {
-            for (let y = 0; y < nextPiece.shape.length; y++) {
-                for (let x = 0; x < nextPiece.shape[y].length; x++) {
-                    if (nextPiece.shape[y][x]) {
-                        nextCtxTouch.fillStyle = nextPiece.color;
-                        nextCtxTouch.fillRect(
-                            (offsetX + x) * BLOCK_SIZE + 1,
-                            (offsetY + y) * BLOCK_SIZE + 1,
-                            BLOCK_SIZE - 2,
-                            BLOCK_SIZE - 2
-                        );
-                    }
-                }
-            }
-        }
+    }
+}
+
+// 次のピースの描画
+function drawNextPiece() {
+    // サイドパネルのキャンバス
+    drawNextPieceOnCanvas(nextCtx, nextCanvas.width, nextCanvas.height);
+    
+    // タッチコントロールのキャンバス（存在する場合）
+    if (nextCtxTouch) {
+        drawNextPieceOnCanvas(nextCtxTouch, nextCanvasTouch.width, nextCanvasTouch.height);
     }
 }
 
@@ -500,9 +492,8 @@ function startGame() {
 function togglePause() {
     isPaused = !isPaused;
     const pauseText = isPaused ? '再開' : '一時停止';
-    document.getElementById('pause-button').textContent = pauseText;
+    pauseButtonMain.textContent = pauseText;
     
-    const pauseButtonTouch = document.getElementById('pause-button-touch');
     if (pauseButtonTouch) pauseButtonTouch.textContent = pauseText;
 }
 
@@ -542,12 +533,10 @@ document.addEventListener('keydown', (e) => {
 
 // ボタン状態の同期ヘルパー関数
 function syncButtonStates(startDisabled, pauseDisabled, pauseText) {
-    document.getElementById('start-button').disabled = startDisabled;
-    document.getElementById('pause-button').disabled = pauseDisabled;
-    document.getElementById('pause-button').textContent = pauseText || '一時停止';
+    startButtonMain.disabled = startDisabled;
+    pauseButtonMain.disabled = pauseDisabled;
+    pauseButtonMain.textContent = pauseText || '一時停止';
     
-    const startButtonTouch = document.getElementById('start-button-touch');
-    const pauseButtonTouch = document.getElementById('pause-button-touch');
     if (startButtonTouch) startButtonTouch.disabled = startDisabled;
     if (pauseButtonTouch) {
         pauseButtonTouch.disabled = pauseDisabled;
@@ -556,13 +545,11 @@ function syncButtonStates(startDisabled, pauseDisabled, pauseText) {
 }
 
 // ボタンイベント
-document.getElementById('start-button').addEventListener('click', startGame);
-document.getElementById('pause-button').addEventListener('click', togglePause);
+startButtonMain.addEventListener('click', startGame);
+pauseButtonMain.addEventListener('click', togglePause);
 document.getElementById('restart-button').addEventListener('click', startGame);
 
 // タッチコントロール用のボタンイベント
-const startButtonTouch = document.getElementById('start-button-touch');
-const pauseButtonTouch = document.getElementById('pause-button-touch');
 if (startButtonTouch) {
     startButtonTouch.addEventListener('click', startGame);
 }
