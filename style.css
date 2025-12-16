@@ -223,6 +223,40 @@ h3 {
     display: none;
 }
 
+.touch-controls-header {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.touch-controls-header h3 {
+    color: #667eea;
+    margin: 0;
+    font-size: 1em;
+}
+
+#next-piece-touch {
+    border: 3px solid #667eea;
+    border-radius: 10px;
+    background: #1a1a2e;
+    display: block;
+}
+
+.touch-controls-buttons {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.touch-controls-buttons .control-button {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 1em;
+}
+
 .touch-row {
     display: flex;
     gap: 15px;
@@ -391,11 +425,24 @@ h3 {
     .touch-controls {
         grid-column: 3;
         grid-row: 2 / 4;
-        max-width: 240px;
+        max-width: 280px;
         width: 100%;
         margin-top: 0;
         padding: 15px;
         align-self: start;
+    }
+    
+    .touch-controls-header {
+        display: flex;
+    }
+    
+    .touch-controls-buttons {
+        display: flex;
+    }
+    
+    #next-piece-touch {
+        width: 100px;
+        height: 100px;
     }
     
     .touch-button {

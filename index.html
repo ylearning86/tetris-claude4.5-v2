@@ -63,6 +63,14 @@
         
         <!-- タッチコントロール（iPad/モバイル用） -->
         <div class="touch-controls hidden" id="touch-controls">
+            <div class="touch-controls-header">
+                <h3>次のブロック</h3>
+                <canvas id="next-piece-touch" width="120" height="120"></canvas>
+            </div>
+            <div class="touch-controls-buttons">
+                <button id="start-button-touch" class="control-button">スタート</button>
+                <button id="pause-button-touch" class="control-button" disabled>一時停止</button>
+            </div>
             <div class="touch-row">
                 <button class="touch-button" id="rotate-button">↻<br/>回転</button>
             </div>
