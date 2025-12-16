@@ -629,5 +629,6 @@ function handleSwipe() {
 }
 
 // 初期描画
+initBoard();
 drawBoard();
 drawNextPiece();
