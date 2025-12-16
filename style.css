@@ -306,19 +306,99 @@ h3 {
 
 /* iPad（横向き） */
 @media (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
-    .game-content {
-        flex-direction: row;
+    body {
+        padding: 5px;
         align-items: flex-start;
-        justify-content: center;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+    
+    .game-container {
+        padding: 10px;
+        max-width: 100%;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 120px 1fr 240px;
+        grid-template-rows: auto 1fr;
+        gap: 10px;
+        align-items: start;
+    }
+    
+    /* ヘッダーを全幅に配置（タイトルのみ） */
+    .game-header {
+        grid-column: 1 / -1;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    
+    h1 {
+        font-size: 1.5em;
+        margin-bottom: 0;
+    }
+    
+    /* スコア表示を左側に縦並びで配置 */
+    .score-container {
+        grid-column: 1;
+        grid-row: 2;
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+    
+    .score-item {
+        min-width: auto;
+        width: 100%;
+        padding: 8px 10px;
+    }
+    
+    .score-item span:first-child {
+        font-size: 0.8em;
+    }
+    
+    .score-item span:last-child {
+        font-size: 1.2em;
+    }
+    
+    /* ゲームコンテンツを中央に配置 */
+    .game-content {
+        grid-column: 2;
+        grid-row: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
+    }
+    
+    .game-board-container {
+        flex-shrink: 0;
     }
     
     #game-board {
-        width: 300px;
-        height: 600px;
+        width: 260px;
+        height: 520px;
     }
     
+    /* サイドパネルを非表示（次のブロックも非表示） */
+    .side-panel {
+        display: none;
+    }
+    
+    /* タッチコントロールを右側に配置 */
     .touch-controls {
-        max-width: 300px;
+        grid-column: 3;
+        grid-row: 2;
+        max-width: 240px;
+        width: 100%;
+        margin-top: 0;
+        padding: 15px;
+        align-self: start;
+    }
+    
+    .touch-button {
+        width: 65px;
+        height: 65px;
+        font-size: 1.2em;
     }
 }
 
