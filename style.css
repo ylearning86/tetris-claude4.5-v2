@@ -24,13 +24,13 @@ body {
 
 .game-header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 h1 {
     color: #667eea;
     font-size: 2.5em;
-    margin-bottom: 20px;
+    margin-bottom: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -39,6 +39,7 @@ h1 {
     justify-content: center;
     gap: 30px;
     flex-wrap: wrap;
+    margin-bottom: 30px;
 }
 
 .score-item {
@@ -319,16 +320,17 @@ h3 {
         width: 100%;
         display: grid;
         grid-template-columns: 120px 1fr 240px;
-        grid-template-rows: auto 1fr;
+        grid-template-rows: auto auto 1fr;
         gap: 10px;
         align-items: start;
     }
     
-    /* ヘッダーを全幅に配置（タイトルのみ） */
+    /* ヘッダーを全幅に配置 */
     .game-header {
         grid-column: 1 / -1;
+        grid-row: 1;
         text-align: center;
-        margin-bottom: 5px;
+        margin-bottom: 0;
     }
     
     h1 {
@@ -339,10 +341,11 @@ h3 {
     /* スコア表示を左側に縦並びで配置 */
     .score-container {
         grid-column: 1;
-        grid-row: 2;
+        grid-row: 2 / 4;
         flex-direction: column;
         gap: 10px;
-        align-items: stretch;
+        margin-bottom: 0;
+        align-self: start;
     }
     
     .score-item {
@@ -362,7 +365,7 @@ h3 {
     /* ゲームコンテンツを中央に配置 */
     .game-content {
         grid-column: 2;
-        grid-row: 2;
+        grid-row: 2 / 4;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -379,7 +382,7 @@ h3 {
         height: 520px;
     }
     
-    /* サイドパネルを非表示（次のブロックも非表示） */
+    /* サイドパネルを非表示 */
     .side-panel {
         display: none;
     }
@@ -387,7 +390,7 @@ h3 {
     /* タッチコントロールを右側に配置 */
     .touch-controls {
         grid-column: 3;
-        grid-row: 2;
+        grid-row: 2 / 4;
         max-width: 240px;
         width: 100%;
         margin-top: 0;
