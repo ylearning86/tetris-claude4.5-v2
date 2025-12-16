@@ -518,6 +518,116 @@ document.getElementById('restart-button').addEventListener('click', () => {
     startGame();
 });
 
+// タッチデバイスの検出とタッチコントロールの表示
+function isTouchDevice() {
+    return (('ontouchstart' in window) ||
+            (navigator.maxTouchPoints > 0) ||
+            (navigator.msMaxTouchPoints > 0));
+}
+
+// タッチコントロールの表示/非表示
+if (isTouchDevice()) {
+    const touchControls = document.getElementById('touch-controls');
+    if (touchControls) {
+        touchControls.classList.remove('hidden');
+    }
+}
+
+// タッチコントロールのボタンイベント
+document.getElementById('left-button')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!isGameOver && currentPiece && !isPaused) {
+        movePiece(-1, 0);
+        drawBoard();
+    }
+});
+
+document.getElementById('right-button')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!isGameOver && currentPiece && !isPaused) {
+        movePiece(1, 0);
+        drawBoard();
+    }
+});
+
+document.getElementById('down-button')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!isGameOver && currentPiece && !isPaused) {
+        if (movePiece(0, 1)) {
+            score += 1;
+            updateScore();
+        }
+        drawBoard();
+    }
+});
+
+document.getElementById('rotate-button')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!isGameOver && currentPiece && !isPaused) {
+        rotatePiece();
+        drawBoard();
+    }
+});
+
+// スワイプジェスチャーのサポート
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+const gameBoard = document.getElementById('game-board');
+
+gameBoard.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+    e.preventDefault();
+}, { passive: false });
+
+gameBoard.addEventListener('touchend', (e) => {
+    if (isGameOver || !currentPiece || isPaused) return;
+    
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipe();
+    e.preventDefault();
+}, { passive: false });
+
+function handleSwipe() {
+    const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
+    const minSwipeDistance = 30;
+    
+    // タップ（回転）
+    if (Math.abs(deltaX) < minSwipeDistance && Math.abs(deltaY) < minSwipeDistance) {
+        rotatePiece();
+        drawBoard();
+        return;
+    }
+    
+    // スワイプ方向の判定
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // 横方向のスワイプ
+        if (deltaX > minSwipeDistance) {
+            // 右スワイプ
+            movePiece(1, 0);
+        } else if (deltaX < -minSwipeDistance) {
+            // 左スワイプ
+            movePiece(-1, 0);
+        }
+    } else {
+        // 縦方向のスワイプ
+        if (deltaY > minSwipeDistance) {
+            // 下スワイプ
+            if (movePiece(0, 1)) {
+                score += 1;
+                updateScore();
+            }
+        }
+    }
+    
+    drawBoard();
+}
+
 // 初期描画
 drawBoard();
 drawNextPiece();

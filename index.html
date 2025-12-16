@@ -2,7 +2,10 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="テトリス">
     <title>テトリス</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -54,6 +57,18 @@
                 
                 <button id="start-button" class="control-button">スタート</button>
                 <button id="pause-button" class="control-button" disabled>一時停止</button>
+            </div>
+        </div>
+        
+        <!-- タッチコントロール（iPad/モバイル用） -->
+        <div class="touch-controls hidden" id="touch-controls">
+            <div class="touch-row">
+                <button class="touch-button" id="rotate-button">↻<br/>回転</button>
+            </div>
+            <div class="touch-row">
+                <button class="touch-button" id="left-button">←</button>
+                <button class="touch-button" id="down-button">↓<br/>落下</button>
+                <button class="touch-button" id="right-button">→</button>
             </div>
         </div>
     </div>
