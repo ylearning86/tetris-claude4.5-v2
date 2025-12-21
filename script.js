@@ -439,6 +439,16 @@ function gameOver() {
     document.getElementById('final-score').textContent = score;
     document.getElementById('game-over').classList.remove('hidden');
     syncButtonStates(false, true, '一時停止');
+    
+    // ゲームポータルにスコアを送信
+    if (typeof GamePortal !== 'undefined' && gameStartTime) {
+        const playTime = Math.floor((Date.now() - gameStartTime) / 1000);
+        GamePortal.submitScore({
+            gameName: 'tetris-claude4.5-v2',
+            score: score,
+            playTime: playTime
+        }).catch(err => console.error('スコア送信エラー:', err));
+    }
 }
 
 // 新しいピースの生成
@@ -469,12 +479,13 @@ function update() {
 // ゲームの開始
 function startGame() {
     initBoard();
+    gameStartTime = Date.now();
     score = 0;
     level = 1;
     lines = 0;
     isPaused = false;
     isGameOver = false;
-    dropSpeed = 1000;
+    dropSpeed = 30;
     
     updateScore();
     document.getElementById('game-over').classList.add('hidden');
