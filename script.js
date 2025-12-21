@@ -485,7 +485,7 @@ function startGame() {
     lines = 0;
     isPaused = false;
     isGameOver = false;
-    dropSpeed = 30;
+    dropSpeed = 1000;
     
     updateScore();
     document.getElementById('game-over').classList.add('hidden');
