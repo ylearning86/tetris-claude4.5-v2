@@ -2,12 +2,24 @@
 
 HTML/CSS/JavaScriptで作成したクラシックなテトリスゲームです。
 
+## 🌐 言語対応 / Language Support
+
+このゲームは**日本語と英語の両方に対応**しています！
+This game supports both **Japanese and English**!
+
+- 🇯🇵 日本語 (Japanese)
+- 🇺🇸 English
+
+画面右上のボタンで言語を切り替えることができます。選択した言語は自動的に保存されます。
+You can switch languages using the button in the top right corner. Your language preference is automatically saved.
+
 ## 🎯 プロジェクト概要
 
 このプロジェクトは、**高校生のプログラミング学習教材**として作成されたブラウザベースのテトリスゲームです。GitHub CopilotとVS Codeを使用して開発されており、実践的なWeb開発の流れを学ぶことができます。
 
 ## ✨ 機能
 
+- 🌐 日本語/英語の言語切り替え
 - 🎲 7種類のテトロミノ（I, O, T, S, Z, J, L）
 - 🔄 ブロックの回転と移動
 - 🎯 ライン消去とスコアリング
