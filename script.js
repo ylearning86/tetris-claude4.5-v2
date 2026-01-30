@@ -1,3 +1,83 @@
+// 多言語対応
+const translations = {
+    ja: {
+        title: 'テトリス',
+        score: 'スコア',
+        level: 'レベル',
+        lines: 'ライン',
+        nextPiece: '次のブロック',
+        controls: '操作方法',
+        controlMove: '左右移動',
+        controlDrop: '高速落下',
+        controlRotate: '回転',
+        controlPause: '一時停止',
+        start: 'スタート',
+        pause: '一時停止',
+        resume: '再開',
+        gameOver: 'ゲームオーバー',
+        finalScore: '最終スコア',
+        playAgain: 'もう一度プレイ',
+        rotate: '回転',
+        drop: '落下'
+    },
+    en: {
+        title: 'Tetris',
+        score: 'Score',
+        level: 'Level',
+        lines: 'Lines',
+        nextPiece: 'Next',
+        controls: 'Controls',
+        controlMove: 'Move Left/Right',
+        controlDrop: 'Fast Drop',
+        controlRotate: 'Rotate',
+        controlPause: 'Pause',
+        start: 'Start',
+        pause: 'Pause',
+        resume: 'Resume',
+        gameOver: 'Game Over',
+        finalScore: 'Final Score',
+        playAgain: 'Play Again',
+        rotate: 'Rotate',
+        drop: 'Drop'
+    }
+};
+
+let currentLanguage = localStorage.getItem('tetris-language') || 'ja';
+
+function setLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem('tetris-language', lang);
+    
+    // Update HTML lang attribute
+    document.getElementById('html-root').setAttribute('lang', lang);
+    
+    // Update page title
+    document.title = translations[lang].title;
+    
+    // Update all elements with data-i18n attribute
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[lang][key]) {
+            element.textContent = translations[lang][key];
+        }
+    });
+    
+    // Update language toggle button
+    const languageButton = document.getElementById('language-toggle');
+    if (languageButton) {
+        languageButton.textContent = lang === 'ja' ? 'English' : '日本語';
+    }
+    
+    // Update pause button text if game is paused
+    if (isPaused) {
+        syncButtonStates(true, false, translations[lang].resume);
+    } else {
+        const pauseText = translations[lang].pause;
+        if (pauseButtonMain) pauseButtonMain.textContent = pauseText;
+        if (pauseButtonTouch) pauseButtonTouch.textContent = pauseText;
+    }
+}
+
 // ゲームボードの設定
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 20;
@@ -438,7 +518,7 @@ function gameOver() {
     playGameOverSound(); // ゲームオーバー音
     document.getElementById('final-score').textContent = score;
     document.getElementById('game-over').classList.remove('hidden');
-    syncButtonStates(false, true, '一時停止');
+    syncButtonStates(false, true, translations[currentLanguage].pause);
     
     // ゲームポータルにスコアを送信
     if (typeof GamePortal !== 'undefined' && gameStartTime) {
@@ -489,7 +569,7 @@ function startGame() {
     
     updateScore();
     document.getElementById('game-over').classList.add('hidden');
-    syncButtonStates(true, false, '一時停止');
+    syncButtonStates(true, false, translations[currentLanguage].pause);
     
     nextPiece = randomTetromino();
     spawnPiece();
@@ -502,7 +582,7 @@ function startGame() {
 // 一時停止/再開
 function togglePause() {
     isPaused = !isPaused;
-    const pauseText = isPaused ? '再開' : '一時停止';
+    const pauseText = isPaused ? translations[currentLanguage].resume : translations[currentLanguage].pause;
     pauseButtonMain.textContent = pauseText;
     
     if (pauseButtonTouch) pauseButtonTouch.textContent = pauseText;
@@ -546,12 +626,12 @@ document.addEventListener('keydown', (e) => {
 function syncButtonStates(startDisabled, pauseDisabled, pauseText) {
     startButtonMain.disabled = startDisabled;
     pauseButtonMain.disabled = pauseDisabled;
-    pauseButtonMain.textContent = pauseText || '一時停止';
+    pauseButtonMain.textContent = pauseText || translations[currentLanguage].pause;
     
     if (startButtonTouch) startButtonTouch.disabled = startDisabled;
     if (pauseButtonTouch) {
         pauseButtonTouch.disabled = pauseDisabled;
-        pauseButtonTouch.textContent = pauseText || '一時停止';
+        pauseButtonTouch.textContent = pauseText || translations[currentLanguage].pause;
     }
 }
 
@@ -726,3 +806,11 @@ function handleSwipe() {
 initBoard();
 drawBoard();
 drawNextPiece();
+
+// 言語の初期化と切り替え
+setLanguage(currentLanguage);
+
+document.getElementById('language-toggle').addEventListener('click', () => {
+    const newLang = currentLanguage === 'ja' ? 'en' : 'ja';
+    setLanguage(newLang);
+});
