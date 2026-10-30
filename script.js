@@ -1,3 +1,35 @@
+// 多言語対応 (Japanese / English)
+const I18N = {
+    ja: { title: 'テトリス', score: 'スコア', level: 'レベル', lines: 'ライン', gameOver: 'ゲームオーバー', finalScore: '最終スコア:', playAgain: 'もう一度プレイ', next: '次のブロック', controls: '操作方法', ctrlMove: '左右移動', ctrlDrop: '高速落下', ctrlRotate: '回転', space: 'スペース', pause: '一時停止', resume: '再開', start: 'スタート', rotate: '回転', drop: '落下', langButton: 'EN' },
+    en: { title: 'Tetris', score: 'Score', level: 'Level', lines: 'Lines', gameOver: 'Game Over', finalScore: 'Final Score:', playAgain: 'Play Again', next: 'Next Piece', controls: 'Controls', ctrlMove: 'Move left/right', ctrlDrop: 'Soft drop', ctrlRotate: 'Rotate', space: 'Space', pause: 'Pause', resume: 'Resume', start: 'Start', rotate: 'Rotate', drop: 'Drop', langButton: '日本語' }
+};
+let currentLang = 'ja';
+try {
+    currentLang = localStorage.getItem('tetris-lang') || ((navigator.language || 'ja').toLowerCase().startsWith('ja') ? 'ja' : 'en');
+} catch (e) {
+    currentLang = (navigator.language || 'ja').toLowerCase().startsWith('ja') ? 'ja' : 'en';
+}
+let pauseKey = 'pause';
+
+function t(key) {
+    return I18N[currentLang][key];
+}
+
+function applyLanguage() {
+    document.documentElement.lang = currentLang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (key === 'pause' && el.tagName === 'BUTTON') {
+            el.textContent = t(pauseKey);
+        } else {
+            el.textContent = t(key);
+        }
+    });
+    document.title = t('title');
+    const langButton = document.getElementById('lang-button');
+    if (langButton) langButton.textContent = t('langButton');
+}
+
 // ゲームボードの設定
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 20;
@@ -438,7 +470,7 @@ function gameOver() {
     playGameOverSound(); // ゲームオーバー音
     document.getElementById('final-score').textContent = score;
     document.getElementById('game-over').classList.remove('hidden');
-    syncButtonStates(false, true, '一時停止');
+    syncButtonStates(false, true, 'pause');
     
     // ゲームポータルにスコアを送信
     if (typeof GamePortal !== 'undefined' && gameStartTime) {
@@ -489,7 +521,7 @@ function startGame() {
     
     updateScore();
     document.getElementById('game-over').classList.add('hidden');
-    syncButtonStates(true, false, '一時停止');
+    syncButtonStates(true, false, 'pause');
     
     nextPiece = randomTetromino();
     spawnPiece();
@@ -502,10 +534,10 @@ function startGame() {
 // 一時停止/再開
 function togglePause() {
     isPaused = !isPaused;
-    const pauseText = isPaused ? '再開' : '一時停止';
-    pauseButtonMain.textContent = pauseText;
+    pauseKey = isPaused ? 'resume' : 'pause';
+    pauseButtonMain.textContent = t(pauseKey);
     
-    if (pauseButtonTouch) pauseButtonTouch.textContent = pauseText;
+    if (pauseButtonTouch) pauseButtonTouch.textContent = t(pauseKey);
 }
 
 // キーボード操作
@@ -543,15 +575,17 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ボタン状態の同期ヘルパー関数
-function syncButtonStates(startDisabled, pauseDisabled, pauseText) {
+function syncButtonStates(startDisabled, pauseDisabled, key) {
+    pauseKey = key || 'pause';
+    const pauseText = t(pauseKey);
     startButtonMain.disabled = startDisabled;
     pauseButtonMain.disabled = pauseDisabled;
-    pauseButtonMain.textContent = pauseText || '一時停止';
+    pauseButtonMain.textContent = pauseText;
     
     if (startButtonTouch) startButtonTouch.disabled = startDisabled;
     if (pauseButtonTouch) {
         pauseButtonTouch.disabled = pauseDisabled;
-        pauseButtonTouch.textContent = pauseText || '一時停止';
+        pauseButtonTouch.textContent = pauseText;
     }
 }
 
@@ -726,3 +760,11 @@ function handleSwipe() {
 initBoard();
 drawBoard();
 drawNextPiece();
+
+// 言語切り替え
+document.getElementById('lang-button').addEventListener('click', () => {
+    currentLang = currentLang === 'ja' ? 'en' : 'ja';
+    try { localStorage.setItem('tetris-lang', currentLang); } catch (e) {}
+    applyLanguage();
+});
+applyLanguage();

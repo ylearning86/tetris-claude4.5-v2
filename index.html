@@ -6,26 +6,27 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="テトリス">
-    <title>テトリス</title>
+    <title data-i18n="title">テトリス</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="game-container">
         <div class="game-header">
-            <h1>テトリス</h1>
+            <h1 data-i18n="title">テトリス</h1>
+            <button id="lang-button" class="control-button" type="button">EN</button>
         </div>
         
         <div class="score-container">
             <div class="score-item">
-                <span>スコア</span>
+                <span data-i18n="score">スコア</span>
                 <span id="score">0</span>
             </div>
             <div class="score-item">
-                <span>レベル</span>
+                <span data-i18n="level">レベル</span>
                 <span id="level">1</span>
             </div>
             <div class="score-item">
-                <span>ライン</span>
+                <span data-i18n="lines">ライン</span>
                 <span id="lines">0</span>
             </div>
         </div>
@@ -34,49 +35,49 @@
             <div class="game-board-container">
                 <canvas id="game-board" width="300" height="600"></canvas>
                 <div id="game-over" class="game-over hidden">
-                    <h2>ゲームオーバー</h2>
-                    <p>最終スコア: <span id="final-score">0</span></p>
-                    <button id="restart-button">もう一度プレイ</button>
+                    <h2 data-i18n="gameOver">ゲームオーバー</h2>
+                    <p><span data-i18n="finalScore">最終スコア:</span> <span id="final-score">0</span></p>
+                    <button id="restart-button" data-i18n="playAgain">もう一度プレイ</button>
                 </div>
             </div>
             
             <div class="side-panel">
                 <div class="next-piece">
-                    <h3>次のブロック</h3>
+                    <h3 data-i18n="next">次のブロック</h3>
                     <canvas id="next-piece" width="120" height="120"></canvas>
                 </div>
                 
                 <div class="controls-info">
-                    <h3>操作方法</h3>
+                    <h3 data-i18n="controls">操作方法</h3>
                     <ul>
-                        <li><strong>←/→</strong>: 左右移動</li>
-                        <li><strong>↓</strong>: 高速落下</li>
-                        <li><strong>↑/スペース</strong>: 回転</li>
-                        <li><strong>P</strong>: 一時停止</li>
+                        <li><strong>←/→</strong>: <span data-i18n="ctrlMove">左右移動</span></li>
+                        <li><strong>↓</strong>: <span data-i18n="ctrlDrop">高速落下</span></li>
+                        <li><strong>↑/<span data-i18n="space">スペース</span></strong>: <span data-i18n="ctrlRotate">回転</span></li>
+                        <li><strong>P</strong>: <span data-i18n="pause">一時停止</span></li>
                     </ul>
                 </div>
                 
-                <button id="start-button" class="control-button">スタート</button>
-                <button id="pause-button" class="control-button" disabled>一時停止</button>
+                <button id="start-button" class="control-button" data-i18n="start">スタート</button>
+                <button id="pause-button" class="control-button" disabled data-i18n="pause">一時停止</button>
             </div>
         </div>
         
         <!-- タッチコントロール（iPad/モバイル用） -->
         <div class="touch-controls hidden" id="touch-controls">
             <div class="touch-controls-header">
-                <h3>次のブロック</h3>
+                <h3 data-i18n="next">次のブロック</h3>
                 <canvas id="next-piece-touch" width="120" height="120"></canvas>
             </div>
             <div class="touch-controls-buttons">
-                <button id="start-button-touch" class="control-button">スタート</button>
-                <button id="pause-button-touch" class="control-button" disabled>一時停止</button>
+                <button id="start-button-touch" class="control-button" data-i18n="start">スタート</button>
+                <button id="pause-button-touch" class="control-button" disabled data-i18n="pause">一時停止</button>
             </div>
             <div class="touch-row">
-                <button class="touch-button" id="rotate-button">↻<br/>回転</button>
+                <button class="touch-button" id="rotate-button">↻<br/><span data-i18n="rotate">回転</span></button>
             </div>
             <div class="touch-row">
                 <button class="touch-button" id="left-button">←</button>
-                <button class="touch-button" id="down-button">↓<br/>落下</button>
+                <button class="touch-button" id="down-button">↓<br/><span data-i18n="drop">落下</span></button>
                 <button class="touch-button" id="right-button">→</button>
             </div>
         </div>
