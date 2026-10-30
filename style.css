@@ -487,3 +487,10 @@ h3 {
         padding: 8px 15px;
     }
 }
+
+#lang-button {
+    width: auto;
+    padding: 4px 12px;
+    margin-top: 8px;
+    font-size: 0.8rem;
+}
